@@ -1,0 +1,13 @@
+kind: pipeline
+type: kubernetes
+name: default
+
+steps:
+  - name: build
+    image: openjdk:8-slim-buster
+    commands:
+      - mkdir -p data/uploads
+      - ./generateDummySslCertificates.sh
+      - mvn clean install -DskipTests=true -DskipCheckStyle=false -Dmaven.javadoc.skip=true -B -V
+      - mvn test -B -DskipCheckStyle=true -Djava.security.auth.login.config=${PWD}/kafka-webview-ui/src/test/resources/jaas.conf
+
